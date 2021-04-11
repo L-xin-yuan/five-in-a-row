@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style> 
+        *{ margin: 0; padding: 0;}
+        .ball{ position: relative; width: 400px; height: 400px; margin:  0 auto; background-color: black; border-radius: 50%;}
+        .ball div{ position: absolute; border-radius: 50%; transition: all 0.2s; /*设置所有属性都过渡动画*/}
+    </style>
+</head>
+<body>
+    <div class="ball">
+
+    </div>
+
+    <div class="ball" style="background: none;">
+        <div style="left: 0; top: 0; background-color: #333;"></div>
+        <div style="left: 50%; top: 0;  background-color: #f0f;"></div>
+        <div style="left: 0; top: 50%;  background-color: #f11;"></div>
+        <div style="left: 50%; top: 50%;  background-color: #00f;"></div>
+    </div>
+
+    <script>
+        //1.获取.ball对应div节点
+        //2.节点.ball添加事件onclick
+        //3.节点.ball触发onclick时，要创建4个div节点，并设置style的left、top、backgroundColor属性
+        //4.节点.ball需设置style的background.
+        //5.将创建的4个div节点放入.ball节点
+
+        var ballNode = document.querySelector('.ball');
+        ballNode.onclick = function(){
+            game(ballNode);
+        }
+        
+        function game(node){
+            var fragNode = document.createDocumentFragment();//节点容器
+            var arr = [];//存入创建的div节点的数组集合
+            for(var i = 0; i< 4; i++){
+                let divNode = document.createElement('div');//创建div节点
+                divNode.style.backgroundColor = '#' + randomColor();
+                divNode.style.width = '100%';
+                divNode.style.height = '100%';
+                divNode.style.left = '0';
+                divNode.style.top = '0';
+                divNode.onclick = function(){
+                   game(divNode);
+                };
+                fragNode.appendChild(divNode);//将div节点放入到节点容器中
+                arr.push(divNode);//添加数组便于下方修改样式
+            }
+            node.style.background = 'none';
+            node.appendChild(fragNode);
+            node.onclick = null;
+
+            //对已经插入的节点修改样式
+            setTimeout(function(){
+                arr.forEach(function(node,index){
+                    if(index%2 == 0){
+                        node.style.left = '0';
+                    }
+                    else{
+                        node.style.left = '50%';
+                    }
+                    if(index<2){
+                        node.style.top = '0';
+                    }
+                    else{
+                        node.style.top = '50%';
+                    }
+                    node.style.width = '50%';
+                    node.style.height = '50%';
+                });
+            },0)
+        }
+
+
+        //随机返回"000000" - "ffffff"之间的值
+        function randomColor(){
+            var str = '0123456789abcdef';
+            var color = '';
+            for(var i = 0; i<6; i++){
+                var pos = Math.floor(Math.random()*str.length);
+                color += str.charAt(pos);
+            }
+            return color;
+        }
+    </script>
+</body>
+</html>
